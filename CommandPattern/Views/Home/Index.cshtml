@@ -1,0 +1,26 @@
+﻿@model dynamic
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>Command Pattern for MVC</title>
+    </head>
+    <body>
+        <div>
+            <h1>Demo Commands</h1>
+            <ul>
+                <li><a href="@Url.Content("~/GetUserName?id=1")">GetUserName - Succeed</a></li>
+                <li><a href="@Url.Content("~/GetUserName")">GetUserName - Failure</a></li>
+                <li><a href="@Url.Content("~/GetPet")">GetPet - Succeed - 0</a></li>
+                <li><a href="@Url.Content("~/GetPet?id=1")">GetPet - Succeed - 1</a></li>
+                <li><a href="@Url.Content("~/GetPet?id=42")">GetPet - Failure</a></li>
+                <li><a href="@Url.Content("~/Fail")">Fail</a></li>
+            </ul>
+        </div>
+    </body>
+</html>

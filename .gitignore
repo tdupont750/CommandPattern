@@ -1,0 +1,5 @@
+*.suo
+
+/CommandPattern/bin
+/CommandPattern/obj
+*.user
