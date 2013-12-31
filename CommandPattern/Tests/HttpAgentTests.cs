@@ -1,12 +1,12 @@
 ﻿using System;
+using CommandPattern.Agents;
+using CommandPattern.Commands;
 using CommandPattern.Core;
-using CommandPattern.Models;
-using CommandPattern.Runners;
 using Xunit;
 
 namespace CommandPattern.Tests
 {
-    public class HttpCommandRunnerTests
+    public class HttpAgentTests
     {
         private const string BaseAddress = "http://localhost/CommandPattern/";
 
@@ -14,9 +14,9 @@ namespace CommandPattern.Tests
         public void GetUser()
         {
             var runner = GetCommandRunner();
-            var model = new GetUserNameModel { Id = 1 };
+            var command = new GetUserNameCommand { Id = 1 };
 
-            var result = runner.Execute(model);
+            var result = runner.Execute(command);
             Assert.Equal("Demo McTester", result);
         }
 
@@ -24,9 +24,9 @@ namespace CommandPattern.Tests
         public void GetUserAsync()
         {
             var runner = GetCommandRunner();
-            var model = new GetUserNameModel { Id = 1 };
+            var command = new GetUserNameCommand { Id = 1 };
 
-            var result = runner.ExecuteAsync(model);
+            var result = runner.ExecuteAsync(command);
             result.Wait();
             Assert.Equal("Demo McTester", result.Result);
         }
@@ -35,9 +35,9 @@ namespace CommandPattern.Tests
         public void GetPet()
         {
             var runner = GetCommandRunner();
-            var model = new GetPetModel();
+            var command = new GetPetCommand();
 
-            var result = runner.Execute(model);
+            var result = runner.Execute(command);
             Assert.Equal(PetType.Dog, result.Type);
         }
 
@@ -45,11 +45,11 @@ namespace CommandPattern.Tests
         public void GetPetInvalidId()
         {
             var runner = GetCommandRunner();
-            var model = new GetPetModel { Id = 42 };
+            var command = new GetPetCommand { Id = 42 };
 
             Assert.Throws<AggregateException>(() =>
             {
-                runner.Execute(model);
+                runner.Execute(command);
             });
         }
 
@@ -57,11 +57,11 @@ namespace CommandPattern.Tests
         public void Fail()
         {
             var runner = GetCommandRunner();
-            var model = new FailModel();
+            var command = new FailCommand();
 
             Assert.Throws<AggregateException>(() =>
             {
-                runner.Execute(model);
+                runner.Execute(command);
             });
         }
 
@@ -69,16 +69,16 @@ namespace CommandPattern.Tests
         public void FailAsync()
         {
             var runner = GetCommandRunner();
-            var model = new FailModel();
+            var command = new FailCommand();
 
-            var result = runner.ExecuteAsync(model);
+            var result = runner.ExecuteAsync(command);
 
             Assert.Throws<AggregateException>(() => result.Wait());
         }
 
-        private static ICommandRunner GetCommandRunner()
+        private static IAgent GetCommandRunner()
         {
-            return new HttpCommandRunner(BaseAddress);
+            return new HttpAgent(BaseAddress);
         }
     }
 }

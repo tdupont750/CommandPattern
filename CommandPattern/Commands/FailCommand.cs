@@ -1,19 +1,8 @@
-﻿using System;
-using CommandPattern.Core;
-using CommandPattern.Models;
+﻿using CommandPattern.Core;
 
 namespace CommandPattern.Commands
 {
-    public class FailCommand : ICommand<FailModel, int>
+    public class FailCommand : ICommand<int>
     {
-        public void Validate(FailModel nameModel)
-        {
-            throw new NotImplementedException();
-        }
-
-        public int Execute(FailModel nameModel)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

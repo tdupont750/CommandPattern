@@ -1,47 +1,44 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Web.Mvc;
 using CommandPattern.Core;
 using CommandPattern.Helpers;
-using CommandPattern.Runners;
-using Microsoft.Practices.Unity;
 
 namespace CommandPattern.Controllers
 {
     public class CommandController : Controller
     {
         private static readonly IDictionary<string, Type> Map = CommandReflectionHelper
-            .GetCommandTypes()
+            .GetOperationMap()
             .Select(p => p.Key.GetGenericArguments().First())
             .ToDictionary(
                 k => k.Name,
                 v => v,
                 StringComparer.InvariantCultureIgnoreCase);
 
-        private readonly ICommandRunner _commandRunner;
-        
-        public CommandController(ICommandRunner commandRunner)
+        private readonly IAgent _agent;
+
+        public CommandController(IAgent agent)
         {
-            _commandRunner = commandRunner;
+            _agent = agent;
         }
         
-        public ActionResult Execute(string commandModelName)
+        public ActionResult Execute(string commandName)
         {
             Type type;
 
-            if (Map.ContainsKey(commandModelName))
-                type = Map[commandModelName];
-            else if (Map.ContainsKey(commandModelName + "Model"))
-                type = Map[commandModelName + "Model"];
+            if (Map.ContainsKey(commandName))
+                type = Map[commandName];
+            else if (Map.ContainsKey(commandName + "Command"))
+                type = Map[commandName + "Command"];
             else
-                throw new ArgumentException("Invalid Command Name: " + commandModelName, "commandModelName");
+                throw new ArgumentException("Invalid Command Name: " + commandName, "commandName");
 
-            dynamic model = Activator.CreateInstance(type);
-            UpdateModel(model);
+            dynamic command = Activator.CreateInstance(type);
+            UpdateModel(command);
 
-            var result = _commandRunner.Execute(model);
+            var result = _agent.Execute(command);
             return Json(result, JsonRequestBehavior.AllowGet);
         }
     }

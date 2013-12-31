@@ -7,24 +7,24 @@ namespace CommandPattern.Helpers
 {
     public static class CommandReflectionHelper
     {
-        public static IDictionary<Type, Type> GetCommandTypes()
+        public static IDictionary<Type, Type> GetOperationMap()
         {
             var map = new Dictionary<Type, Type>();
-            var commands = GetCommands();
+            var operations = GetOperations();
 
-            foreach (var command in commands)
+            foreach (var operation in operations)
             {
-                var from = GetCommandInterface(command);
-                map.Add(from, command);
+                var command = GetOperationInterface(operation);
+                map.Add(command, operation);
             }
 
             return map;
         }
 
-        private static readonly Type CommandType = typeof(ICommand<,>);
-        private static readonly Type ModelType = typeof(ICommandModel<>);
+        private static readonly Type OperationType = typeof(IOperation<,>);
+        private static readonly Type CommandType = typeof(ICommand<>);
 
-        private static IEnumerable<Type> GetCommands()
+        private static IEnumerable<Type> GetOperations()
         {
             return AppDomain.CurrentDomain
                 .GetAssemblies()
@@ -44,22 +44,22 @@ namespace CommandPattern.Helpers
                     if (!t.IsClass || t.IsAbstract)
                         return false;
 
-                    var i = GetCommandInterface(t);
+                    var i = GetOperationInterface(t);
                     return i != null;
                 });
         }
 
+        public static Type GetOperationInterface(Type type)
+        {
+            return GetInterface(type, OperationType);
+        }
+
         public static Type GetCommandInterface(Type type)
         {
-            return GetInterfaceInterface(type, CommandType);
+            return GetInterface(type, CommandType);
         }
 
-        public static Type GetModelInterface(Type type)
-        {
-            return GetInterfaceInterface(type, ModelType);
-        }
-
-        private static Type GetInterfaceInterface(Type type, Type target)
+        private static Type GetInterface(Type type, Type target)
         {
             var interfaces = type.GetInterfaces();
 

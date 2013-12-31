@@ -79,25 +79,25 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands\GetPetCommand.cs" />
+    <Compile Include="Operations\GetPetOperation.cs" />
     <Compile Include="Controllers\CommandController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Core\IOperation.cs" />
+    <Compile Include="Core\IAgent.cs" />
     <Compile Include="Core\ICommand.cs" />
-    <Compile Include="Core\ICommandRunner.cs" />
-    <Compile Include="Core\ICommandModel.cs" />
-    <Compile Include="Models\GetUserNameModel.cs" />
-    <Compile Include="Runners\HttpCommandRunner.cs" />
-    <Compile Include="Runners\UnityCommandRunner.cs" />
+    <Compile Include="Commands\GetUserNameCommand.cs" />
+    <Compile Include="Agents\HttpAgent.cs" />
+    <Compile Include="Agents\UnityAgent.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helpers\CommandReflectionHelper.cs" />
-    <Compile Include="Models\FailModel.cs" />
-    <Compile Include="Models\GetPetModel.cs" />
     <Compile Include="Commands\FailCommand.cs" />
-    <Compile Include="Commands\GetUserNameCommand.cs" />
+    <Compile Include="Operations\FailOperation.cs" />
+    <Compile Include="Operations\GetUserNameOperation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Tests\HttpCommandRunnerTests.cs" />
-    <Compile Include="Tests\UnityCommandRunnerTests.cs" />
+    <Compile Include="Tests\HttpAgentTests.cs" />
+    <Compile Include="Tests\UnityAgentTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Global.asax" />

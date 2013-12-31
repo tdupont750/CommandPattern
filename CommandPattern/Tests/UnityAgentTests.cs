@@ -1,24 +1,22 @@
 using System;
-using System.Collections.Concurrent;
-using System.Diagnostics;
+using CommandPattern.Agents;
+using CommandPattern.Commands;
 using CommandPattern.Core;
 using CommandPattern.Helpers;
-using CommandPattern.Models;
-using CommandPattern.Runners;
 using Microsoft.Practices.Unity;
 using Xunit;
 
 namespace CommandPattern.Tests
 {
-    public class UnityCommandRunnerTests
+    public class UnityAgentTests
     {
         [Fact]
         public void GetUser()
         {
             var factory = GetCommandRunner();
-            var model = new GetUserNameModel {Id = 1};
+            var command = new GetUserNameCommand {Id = 1};
 
-            var result = factory.Execute(model);
+            var result = factory.Execute(command);
             Assert.Equal("Demo McTester", result);
         }
 
@@ -26,9 +24,9 @@ namespace CommandPattern.Tests
         public void GetUserAsync()
         {
             var factory = GetCommandRunner();
-            var model = new GetUserNameModel {Id = 1};
+            var command = new GetUserNameCommand {Id = 1};
 
-            var result = factory.ExecuteAsync(model);
+            var result = factory.ExecuteAsync(command);
             result.Wait();
             Assert.Equal("Demo McTester", result.Result);
         }
@@ -37,9 +35,9 @@ namespace CommandPattern.Tests
         public void GetPet()
         {
             var runner = GetCommandRunner();
-            var model = new GetPetModel();
+            var command = new GetPetCommand();
 
-            var result = runner.Execute(model);
+            var result = runner.Execute(command);
             Assert.Equal(PetType.Dog, result.Type);
         }
 
@@ -47,11 +45,11 @@ namespace CommandPattern.Tests
         public void GetPetInvalidId()
         {
             var runner = GetCommandRunner();
-            var model = new GetPetModel {Id = 42};
+            var command = new GetPetCommand {Id = 42};
 
             Assert.Throws<ArgumentException>(() =>
             {
-                runner.Execute(model);
+                runner.Execute(command);
             });
         }
 
@@ -59,11 +57,11 @@ namespace CommandPattern.Tests
         public void Fail()
         {
             var factory = GetCommandRunner();
-            var model = new FailModel();
+            var command = new FailCommand();
 
             Assert.Throws<NotImplementedException>(() =>
             {
-                factory.Execute(model);
+                factory.Execute(command);
             });
         }
 
@@ -71,17 +69,17 @@ namespace CommandPattern.Tests
         public void FailAsync()
         {
             var factory = GetCommandRunner();
-            var model = new FailModel();
+            var command = new FailCommand();
 
-            var result = factory.ExecuteAsync(model);
+            var result = factory.ExecuteAsync(command);
 
             Assert.Throws<AggregateException>(() => result.Wait());
         }
 
-        private static ICommandRunner GetCommandRunner()
+        private static IAgent GetCommandRunner()
         {
             var container = new UnityContainer();
-            var map = CommandReflectionHelper.GetCommandTypes();
+            var map = CommandReflectionHelper.GetOperationMap();
 
             foreach (var pair in map)
             {
@@ -89,7 +87,7 @@ namespace CommandPattern.Tests
                 container.RegisterType(pair.Key, pair.Value, manager);
             }
 
-            return new UnityCommandRunner(container);
+            return new UnityAgent(container);
         }
     }
 }

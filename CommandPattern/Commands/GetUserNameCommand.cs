@@ -1,20 +1,9 @@
-﻿using System;
-using CommandPattern.Core;
-using CommandPattern.Models;
+﻿using CommandPattern.Core;
 
 namespace CommandPattern.Commands
 {
-    public class GetUserNameCommand : ICommand<GetUserNameModel, string>
+    public class GetUserNameCommand : ICommand<string>
     {
-        public void Validate(GetUserNameModel model)
-        {
-            if (model.Id == default(int))
-                throw new ArgumentException("Invalid Id");
-        }
-
-        public string Execute(GetUserNameModel model)
-        {
-            return "Demo McTester";
-        }
+        public int Id { get; set; }
     }
 }

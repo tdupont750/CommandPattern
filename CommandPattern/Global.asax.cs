@@ -2,9 +2,9 @@
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
+using CommandPattern.Agents;
 using CommandPattern.Core;
 using CommandPattern.Helpers;
-using CommandPattern.Runners;
 using Microsoft.Practices.Unity;
 using Microsoft.Practices.Unity.Mvc;
 
@@ -25,7 +25,7 @@ namespace CommandPattern
 
             RouteTable.Routes.MapRoute(
                 name: "Command",
-                url: "{commandModelName}",
+                url: "{commandName}",
                 defaults: new { controller = "Command", action = "Execute" });
 
             InitUnity();
@@ -46,7 +46,7 @@ namespace CommandPattern
         private static void RegisterCommands(IUnityContainer container)
         {
             LifetimeManager manager;
-            var map = CommandReflectionHelper.GetCommandTypes();
+            var map = CommandReflectionHelper.GetOperationMap();
 
             foreach (var pair in map)
             {
@@ -55,7 +55,7 @@ namespace CommandPattern
             }
 
             manager = new ContainerControlledLifetimeManager();
-            container.RegisterType<ICommandRunner, UnityCommandRunner>(manager);
+            container.RegisterType<IAgent, UnityAgent>(manager);
         }
     }
 }
